@@ -1,6 +1,6 @@
 # go-sql-builder
 
-[![Build Status](https://travis-ci.org/lukewilliamboswell/go-sql-builder.svg)](https://travis-ci.org/lukewilliamboswell/go-sql-builder) [![Coverage Status](https://coveralls.io/repos/lukewilliamboswell/go-sql-builder/badge.svg)](https://coveralls.io/r/lukewilliamboswell/go-sql-builder)
+[![Build Status](https://travis-ci.org/lukewilliamboswell/go-sql-builder.svg)](https://travis-ci.org/lukewilliamboswell/go-sql-builder) [![Coverage Status](https://coveralls.io/repos/lukewilliamboswell/go-sql-builder/badge.svg?branch=master)](https://coveralls.io/r/lukewilliamboswell/go-sql-builder?branch=master)
 
 Compose SQL query strings
 
