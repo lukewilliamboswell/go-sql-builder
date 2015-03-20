@@ -30,3 +30,20 @@ func EQUAL_INT(field string) string {
 func LIKE(field string) string {
 	return fmt.Sprintf(`%s LIKE ?`, field)
 }
+
+func SELECT_FROM(table string, columns ...string) string {
+	query := bytes.NewBufferString(`SELECT `)
+
+	length := len(columns)
+	for i, value := range columns {
+		query.WriteString(`[` + value + `]`)
+
+		if i < length-1 {
+			query.WriteString(`,`)
+		}
+	}
+
+	query.WriteString(` FROM [dbo].[` + table + `]`)
+
+	return query.String()
+}

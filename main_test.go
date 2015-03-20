@@ -68,3 +68,18 @@ func TestLIKE(t *testing.T) {
 		expect(t, result, a.expected, "should correctly build LIKE query")
 	}
 }
+
+func TestSELECT_FROM(t *testing.T) {
+	args := []struct {
+		table    string
+		columns  []string
+		expected string
+	}{
+		{table: `Customer`, columns: []string{`CustomerID`, `Name`}, expected: `SELECT [CustomerID],[Name] FROM [dbo].[Customer]`},
+	}
+
+	for _, a := range args {
+		result := SELECT_FROM(a.table, a.columns...)
+		expect(t, result, a.expected, "should correctly build LIKE query")
+	}
+}
