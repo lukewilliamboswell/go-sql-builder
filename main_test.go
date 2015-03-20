@@ -29,8 +29,8 @@ func TestEQUAL_STRING(t *testing.T) {
 		field    string
 		expected string
 	}{
-		{field: `field1`, expected: `field1 = ?`},
-		{field: `customerID`, expected: `customerID = ?`},
+		{field: `field1`, expected: ` [field1] = ? `},
+		{field: `customerID`, expected: ` [customerID] = ? `},
 	}
 
 	for _, a := range args {
@@ -44,8 +44,8 @@ func TestEQUAL_INT(t *testing.T) {
 		field    string
 		expected string
 	}{
-		{field: `field1`, expected: `field1 = ?nnn`},
-		{field: `a.customerID`, expected: `a.customerID = ?nnn`},
+		{field: `field1`, expected: ` [field1] = ?nnn `},
+		{field: `a.customerID`, expected: ` [a.customerID] = ?nnn `},
 	}
 
 	for _, a := range args {
@@ -59,13 +59,42 @@ func TestLIKE(t *testing.T) {
 		field    string
 		expected string
 	}{
-		{field: `field1`, expected: `field1 LIKE ?`},
-		{field: `a.customerID`, expected: `a.customerID LIKE ?`},
+		{field: `field1`, expected: ` [field1] LIKE ? `},
+		{field: `a.customerID`, expected: ` [a.customerID] LIKE ? `},
 	}
 
 	for _, a := range args {
 		result := LIKE(a.field)
 		expect(t, result, a.expected, "should correctly build LIKE query")
+	}
+}
+
+func TestIN_INT(t *testing.T) {
+	args := []struct {
+		field    string
+		args     []int64
+		expected string
+	}{
+		{field: `field1`, args: []int64{1, 2, 3}, expected: ` [field1] IN(1,2,3) `},
+	}
+
+	for _, a := range args {
+		result := IN_INT(a.field, a.args...)
+		expect(t, result, a.expected, "should correctly build LIKE query")
+	}
+}
+
+func TestCOMPOSE(t *testing.T) {
+	args := []struct {
+		args     []string
+		expected string
+	}{
+		{args: []string{`a`, `BIG`, `h.ello`}, expected: `aBIGh.ello`},
+	}
+
+	for _, a := range args {
+		result := COMPOSE(a.args...)
+		expect(t, result, a.expected, "should correctly build COMPOSE query")
 	}
 }
 
@@ -81,5 +110,21 @@ func TestSELECT_FROM(t *testing.T) {
 	for _, a := range args {
 		result := SELECT_FROM(a.table, a.columns...)
 		expect(t, result, a.expected, "should correctly build LIKE query")
+	}
+}
+
+func TestORDER_BY(t *testing.T) {
+	args := []struct {
+		offset, rows int64
+		fields       []string
+		expected     string
+	}{
+		{offset: 0, rows: 10, fields: []string{`CustomerID`, `Name`}, expected: ` ORDER BY [CustomerID],[Name] OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY `},
+		{offset: 4000, rows: 0, fields: []string{`SupplierID`}, expected: ` ORDER BY [SupplierID] OFFSET 4000 ROWS `},
+	}
+
+	for _, a := range args {
+		result := ORDER_BY(a.offset, a.rows, a.fields...)
+		expect(t, result, a.expected, "should correctly build ORDER_BY query")
 	}
 }
